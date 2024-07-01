@@ -1,4 +1,4 @@
 quarkus:
   mongodb:
-    connection-string: mongodb://mongo.test:27017
-    database: person
+    connection-string: mongodb://localhost:27017
+    database: people

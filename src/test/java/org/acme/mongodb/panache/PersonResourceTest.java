@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,12 +15,13 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static org.acme.mongodb.panache.Status.ACTIVE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @QuarkusTest
 @TestInstance(PER_CLASS)
-public class PersonResourceTest {
+class PersonResourceTest {
 
     @Inject
     PersonRepository personRepository;
@@ -30,18 +31,18 @@ public class PersonResourceTest {
     private Person personToDelete;
 
     @BeforeAll
-    public void setup() {
+    void setup() {
         person1 = new Person();
         person1.name = "Person 1";
-        person1.status = Status.ALIVE;
+        person1.status = ACTIVE;
 
         person2 = new Person();
         person2.name = "Person 2";
-        person2.status = Status.ALIVE;
+        person2.status = ACTIVE;
 
         personToDelete = new Person();
         personToDelete.name = "Person To Delete";
-        personToDelete.status = Status.ALIVE;
+        personToDelete.status = ACTIVE;
 
         List<Person> people = new ArrayList<>();
         people.add(person1);
@@ -52,63 +53,63 @@ public class PersonResourceTest {
     }
 
     @AfterAll
-    public void tearDown() {
+    void tearDown() {
         personRepository.deleteAll().await().atMost(Duration.ofSeconds(2));
     }
 
     @Test
-    public void testGetAllEndpoint() {
+    void testGetAllEndpoint() {
         given()
-                .when().get("/persons")
+                .when().get("/people")
                 .then()
                 .statusCode(200)
                 .body("$.size()", is(2));
     }
 
     @Test
-    public void testGetByIdEndpoint() {
+    void testGetByIdEndpoint() {
         given()
-                .when().get("/persons/{id}", person1.id.toString())
+                .when().get("/people/{id}", person1.id.toString())
                 .then()
                 .statusCode(200)
                 .body("name", is("Person 1"));
     }
 
     @Test
-    public void testCreateEndpoint() {
+    void testCreateEndpoint() {
         Map<String, String> payload = new HashMap<>();
         payload.put("name", "Person 3");
-        payload.put("status", "ALIVE");
+        payload.put("status", "ACTIVE");
 
         given()
                 .body(payload)
                 .contentType(JSON)
-                .when().post("/persons")
+                .when().post("/people")
                 .then()
                 .statusCode(201)
                 .body("name", is("Person 3"));
     }
 
     @Test
-    public void testUpdateEndpoint() {
+    void testUpdateEndpoint() {
         Map<String, String> payload = new HashMap<>();
         payload.put("name", "Person 2 Updated");
-        payload.put("status", "ALIVE");
+        payload.put("status", "ACTIVE");
 
         given()
                 .body(payload)
                 .contentType(JSON)
-                .when().put("/persons/{id}", person2.id.toString())
+                .when().put("/people/{id}", person2.id.toString())
                 .then()
                 .statusCode(200)
                 .body("name", is("Person 2 Updated"));
     }
 
     @Test
-    public void testDeleteEndpoint() {
+    void testDeleteEndpoint() {
         given()
                 .contentType(JSON)
-                .when().delete("/persons/{id}", personToDelete.id.toString())
+                .when().delete("/people/{id}", personToDelete.id.toString())
                 .then()
                 .statusCode(200);
     }
