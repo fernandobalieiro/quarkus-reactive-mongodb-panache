@@ -1,7 +1,0 @@
-services:
-  mongo:
-    image: mongo:3.6
-    volumes:
-      - .:/app
-    ports:
-      - '27017:27017'
