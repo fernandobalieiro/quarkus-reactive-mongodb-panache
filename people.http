@@ -1,0 +1,28 @@
+### Retrieve all People
+GET http://localhost:8080/people
+Content-Type: application/json
+
+### Create a new Person
+POST http://localhost:8080/people
+Content-Type: application/json
+
+{
+	"name": "Alice",
+	"status": "ACTIVE"
+}
+
+### Update a Person
+PUT http://localhost:8080/people/668d61ee9fce61222ed282ea
+Content-Type: application/json
+
+{
+  "name": "Paul",
+  "status": "INACTIVE"
+}
+
+### Remove a Person
+DELETE http://localhost:8080/people/668d61ee9fce61222ed282ea
+
+### Server-Sent Events stream
+GET http://localhost:8080/people/stream
+Content-Type: application/json
